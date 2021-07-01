@@ -9,7 +9,7 @@ let dvd;
 let r, g, b;
 
 function preload() {
-  dvd = loadImage('..\\resources\\logo.png');
+  dvd = loadImage('assets\\logo.png');
 }
 
 function setup() {
