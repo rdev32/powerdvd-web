@@ -8,8 +8,10 @@ let dvd;
 
 let r, g, b;
 
-function preload() {
-  dvd = loadImage('assets\\logo.png');
+async function preload() {
+  const req = await fetch('https://raw.githubusercontent.com/rdev32/powerdvd-web/main/assets/logo.png');
+  const img = req.blob();
+  dvd = loadImage(img);
 }
 
 function setup() {
