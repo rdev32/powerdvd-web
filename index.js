@@ -18,14 +18,14 @@ class Environment {
     setInterval(() => {
       this.clean()
       this.draw()
-    }, 1000 / 10);
+    }, 1000 / 30);
   }
 
   async setup() {
     this.canvas.width = SCREEN_WIDTH
     this.canvas.height = SCREEN_HEIGHT
     this.picture = new Image
-    this.picture.src = './assets/logo.png'
+    this.picture.src = 'https://github.com/rdev32/powerdvd-web/blob/main/assets/logo.png?raw=true'
     
     this.position.x = this.getRandomInt(SCREEN_WIDTH)
     this.position.y = this.getRandomInt(SCREEN_HEIGHT)
