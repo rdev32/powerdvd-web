@@ -1,30 +1,19 @@
 const SCREEN_WIDTH = window.innerWidth - 10
 const SCREEN_HEIGHT = window.innerHeight - 10
 
-class Environment {
+class Window {
   constructor() {
     this.canvas = document.querySelector('#screen')
-
     this.context = this.canvas.getContext('2d')
-    this.picture = null
 
     this.position = { x: 0, y: 0 }
     this.speed = { x: 0, y: 0 }
     this.color = { r: 0, g: 0, b: 0 }
-  }
-
-  run() {
-    this.setup()
-    setInterval(() => {
-      this.clean()
-      this.draw()
-    }, 1000 / 30);
-  }
-
-  async setup() {
+    
     this.canvas.width = SCREEN_WIDTH
     this.canvas.height = SCREEN_HEIGHT
-    this.picture = new Image
+
+    this.picture = new Image()
     this.picture.src = 'https://github.com/rdev32/powerdvd-web/blob/main/assets/logo.png?raw=true'
     
     this.position.x = this.getRandomInt(SCREEN_WIDTH)
@@ -34,46 +23,58 @@ class Environment {
     this.speed.y = 10
 
     this.pickColor()
+
+    this.fps = 30
+    this.interval = 1000 / this.fps
+    this.then = Date.now()
+
+    this.render = this.render.bind(this)
   }
 
-  draw() {
-    this.context.fillStyle = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`
-    this.context.imageSmoothingQuality = 'high'
-    this.context.fillRect(this.position.x, this.position.y, this.picture.width, this.picture.height)
-    this.context.drawImage(this.picture, this.position.x, this.position.y)
+  render() {
+    requestAnimationFrame(this.render)
 
-    this.position.x = this.position.x + this.speed.x
-    this.position.y = this.position.y + this.speed.y;
-  
-    if (this.position.x + this.picture.width >= this.canvas.width) {
-      this.speed.x = -this.speed.x
-      this.position.x = this.canvas.width - this.picture.width
-      this.pickColor()
-    } else if (this.position.x <= 0) {
-      this.speed.x = -this.speed.x
-      this.position.x = 0
-      this.pickColor()
-    }
-  
-    if (this.position.y + this.picture.height >= this.canvas.height) {
-      this.speed.y = -this.speed.y
-      this.position.y = this.canvas.height - this.picture.height
-      this.pickColor()
-    } else if (this.position.y <= 0) {
-      this.speed.y = -this.speed.y
-      this.position.y = 0
-      this.pickColor()
-    }
-  }
+    const now = Date.now()
+    const delta = now - this.then
 
-  clean() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    if (delta > this.interval) {
+      this.then = now - (delta % this.interval)
+
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    
+      this.position.x = this.position.x + this.speed.x
+      this.position.y = this.position.y + this.speed.y
+    
+      if (this.position.x + this.picture.width >= this.canvas.width) {
+        this.speed.x = -this.speed.x
+        this.position.x = this.canvas.width - this.picture.width
+        this.pickColor()
+
+      } else if (this.position.x <= 0) {
+        this.speed.x = -this.speed.x
+        this.position.x = 0
+        this.pickColor()
+      }
+    
+      if (this.position.y + this.picture.height >= this.canvas.height) {
+        this.speed.y = -this.speed.y
+        this.position.y = this.canvas.height - this.picture.height
+        this.pickColor()
+      } else if (this.position.y <= 0) {
+        this.speed.y = -this.speed.y
+        this.position.y = 0
+        this.pickColor()
+      }
+
+      this.context.fillStyle = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`
+      this.context.imageSmoothingQuality = 'high'
+      this.context.fillRect(this.position.x, this.position.y, this.picture.width, this.picture.height)
+      this.context.drawImage(this.picture, this.position.x, this.position.y)
+    }
   }
 
   pickColor() {
-    this.color.r = this.getRandomVal()
-    this.color.g = this.getRandomVal()
-    this.color.b = this.getRandomVal()
+    this.color = this.getRandomVal()
   }
 
   getRandomInt(max, min = 0) {
@@ -83,14 +84,22 @@ class Environment {
   }
 
   getRandomVal() {
-    const steps = [56, 127, 250]
-    const randomStep = steps[Math.floor(Math.random() * steps.length)]
-    return randomStep
+    const minBrightness = 100
+
+    const getRandomBrightVal = () => {
+      return Math.floor(Math.random() * (250 - minBrightness) + minBrightness)
+    }
+  
+    return {
+      r: getRandomBrightVal(),
+      g: getRandomBrightVal(),
+      b: getRandomBrightVal(),
+    }
   }
 }
 
 window.addEventListener('load', () => {
-  document.querySelector('#loader').hidden = true
-  const game = new Environment()
-  game.run()
-})
+  document.querySelector('#loader').hidden = true;
+  const wnd = new Window();
+  wnd.render();
+});
