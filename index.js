@@ -43,7 +43,7 @@ class Environment {
     this.context.drawImage(this.picture, this.position.x, this.position.y)
 
     this.position.x = this.position.x + this.speed.x
-    this.position.y = this.position.y + this.speed.y;
+    this.position.y = this.position.y + this.speed.y
   
     if (this.position.x + this.picture.width >= this.canvas.width) {
       this.speed.x = -this.speed.x
