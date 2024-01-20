@@ -60,6 +60,7 @@ class Window {
         this.speed.y = -this.speed.y
         this.position.y = this.canvas.height - this.picture.height
         this.pickColor()
+        
       } else if (this.position.y <= 0) {
         this.speed.y = -this.speed.y
         this.position.y = 0
@@ -99,7 +100,7 @@ class Window {
 }
 
 window.addEventListener('load', () => {
-  document.querySelector('#loader').hidden = true;
-  const wnd = new Window();
-  wnd.render();
-});
+  document.querySelector('#loader').hidden = true
+  const wnd = new Window()
+  wnd.render()
+})
